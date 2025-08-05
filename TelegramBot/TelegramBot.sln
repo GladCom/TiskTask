@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35919.96
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot", "Bot\Bot.csproj", "{767C8A41-4C26-4A0E-A127-B11236ED2144}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TiskTask.TelegramBot", "TiskTask.TelegramBot\TiskTask.TelegramBot.csproj", "{6AAA4356-3300-44AD-A562-190245EF2ECE}"
 EndProject
 Global
@@ -13,10 +11,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{767C8A41-4C26-4A0E-A127-B11236ED2144}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{767C8A41-4C26-4A0E-A127-B11236ED2144}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{767C8A41-4C26-4A0E-A127-B11236ED2144}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{767C8A41-4C26-4A0E-A127-B11236ED2144}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6AAA4356-3300-44AD-A562-190245EF2ECE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6AAA4356-3300-44AD-A562-190245EF2ECE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6AAA4356-3300-44AD-A562-190245EF2ECE}.Release|Any CPU.ActiveCfg = Release|Any CPU

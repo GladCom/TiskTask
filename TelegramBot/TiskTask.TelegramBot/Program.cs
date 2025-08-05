@@ -7,7 +7,7 @@ Console.WriteLine("Запуск Telegram-бота...");
 var cts = new CancellationTokenSource();
 
 // 🔐 Замени на свой токен
-const string BotToken = "8342535817:AAHvqw-MySn06paS34teBMqJ9kfTsew1zVc";
+const string BotToken = "--";
 
 var botService = new TelegramBot(BotToken);
 
