@@ -44,7 +44,7 @@ namespace TiskTask.TelegramBot
 
                 Console.WriteLine($"📩 От {message.From.FirstName}: {text ?? "[не текст]"}");
 
-                if (text == "/start")
+                if (text == BotChatCommands.Start)
                 {
                     await botClient.SendMessage(
                         chatId: chatId,
@@ -53,7 +53,12 @@ namespace TiskTask.TelegramBot
                     );
                     return;
                 }
-
+                else if (text == BotChatCommands.All) // обработка команды /all
+                {
+                    await CommandManager.TakeAllTasksCommand(botClient, chatId, cancellationToken);
+                }
+                
+                /* Пока убрал вывод ответных сообщений
                 if (message.Type == MessageType.Text && !string.IsNullOrEmpty(text))
                 {
                     await botClient.SendMessage(
@@ -62,6 +67,8 @@ namespace TiskTask.TelegramBot
                         cancellationToken: cancellationToken
                     );
                 }
+                */
+                
                 else
                 {
                     await botClient.SendMessage(
@@ -81,5 +88,27 @@ namespace TiskTask.TelegramBot
         {
             throw new NotImplementedException();
         }
+    }
+    /// <summary>
+    /// Список команд боту при передаче текстовым сообщением.
+    /// </summary>
+    public class BotChatCommands
+    {
+        public const string Start = "/start";
+        public const string Stop = "/stop";
+        public const string Info = "/info";
+        public const string Change = "/change";
+        public const string Restart = "/restart";
+        public const string Go = "/go";
+        public const string ChangeName = "/changename";
+        public const string ChangeCity = "/changecity";
+        public const string ChangeWork = "/changework";
+        public const string ChangeHobby = "/changehobby";
+        public const string ChangeInterests = "/changeinterests";
+        public const string GeneratePairs = "/generatepairs";
+        public const string SendPairs = "/sendpairs";
+        public const string RandomPair = "/randompair";
+        public const string Create = "/create";
+        public const string All = "/all";
     }
 }
