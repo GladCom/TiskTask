@@ -25,59 +25,73 @@ namespace TiskTask.TelegramBot
     {
       _botClient = botClient;
     }
-
+    /// <summary>
+    /// Проверяет была ли запущена команда /create
+    /// </summary>
+    public static bool create;
     public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
     {
-      try
-      {
-        if (update.Message is not Message message) return;
+            try
+            {
+                if (update.Message is not Message message) return;
 
-        var chatId = message.Chat.Id;
+                var chatId = message.Chat.Id;
 
-        var text = message.Text;
+                var text = message.Text;
 
-        Console.WriteLine($"📩 От {message.From.FirstName}: {text ?? "[не текст]"}");
+                Console.WriteLine($"📩 От {message.From.FirstName}: {text ?? "[не текст]"}");
 
-        if (message.Type == MessageType.Text && !string.IsNullOrEmpty(text))
-        {
-          if (text == BotChatCommands.Start)
-          {
-          await botClient.SendMessage(
-              chatId: chatId,
-              text: "Добро пожаловать!",
-              cancellationToken: cancellationToken
-          );
-          return;
-          }
-		  else if (text == BotChatCommands.All) // обработка команды /all
-          {
-          	await CommandManager.TakeAllTasksCommand(botClient, chatId, cancellationToken);
-          }
-          
-		  /* Пока убрал вывод ответных сообщений
-          if (message.Type == MessageType.Text && !string.IsNullOrEmpty(text))
-          {
-           	await botClient.SendMessage(
-           	chatId: chatId,
-            text: $"📝 Вы написали: {text}",
-            cancellationToken: cancellationToken
-           	);
-          }
-          */
+                if (message.Type == MessageType.Text && !string.IsNullOrEmpty(text))
+                {
+                    if (text == BotChatCommands.Start)
+                    {
+                        await botClient.SendMessage(
+                            chatId: chatId,
+                            text: "Добро пожаловать!",
+                            cancellationToken: cancellationToken
+                        );
+                        return;
+                    }
+                    else if (text == BotChatCommands.All) // обработка команды /all
+                    {
+                        await CommandManager.TakeAllTasksCommand(botClient, chatId, cancellationToken);
+                    }
 
-        else
-        {
-          await botClient.SendMessage(
-            chatId: chatId,
-            text: "Я могу обрабатывать только текстовые сообщения.",
-            cancellationToken: cancellationToken
-          );
-        }
-      }
-      catch (Exception ex)
-      {
-        Console.WriteLine($"❌ Ошибка при обработке сообщения: {ex.Message}");
-      }
+                    /* Пока убрал вывод ответных сообщений
+                    if (message.Type == MessageType.Text && !string.IsNullOrEmpty(text))
+                    {
+                      await botClient.SendMessage(
+                      chatId: chatId,
+                      text: $"📝 Вы написали: {text}",
+                      cancellationToken: cancellationToken
+                      );
+                    }
+                    */
+                    if (message.Text == "/create")
+                    {
+                        create = true;
+                        CommandManager.RequestTaskDescriptionAsync(botClient, update);
+
+                    }
+                    else if ((message.Text != "/create") && (create == true))
+                    {
+                        CommandManager.CreateTaskAsync(botClient, update);
+                        create = false;
+                    }
+                    else
+                    {
+                        await botClient.SendMessage(
+                          chatId: chatId,
+                          text: "Я могу обрабатывать только текстовые сообщения.",
+                          cancellationToken: cancellationToken
+                        );
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Ошибка при обработке сообщения: {ex.Message}");
+            }
     }
 
     public Task HandleErrorAsync(ITelegramBotClient botClient, Exception exception, HandleErrorSource source, CancellationToken cancellationToken)
