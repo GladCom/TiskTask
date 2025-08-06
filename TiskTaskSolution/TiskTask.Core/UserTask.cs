@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace TiskTask.Core
 {
+    /// <summary>
+    /// Описывает модель задачи.
+    /// </summary>
     public class UserTask
     {
         public int Id { get; private set; }
