@@ -40,5 +40,18 @@ namespace TiskTask.Core
         /// Потраченное время на задачу.
         /// </summary>
         public TimeSpan TimeSpent {  get; private set; }
+
+        public UserTask(int id, int userId, string title, string description, DateTime createdDate)
+        {
+            Id = id;
+            UserId = userId;
+            Title = title;
+            Description = description;
+            Created = createdDate;
+        }
+
+        public UserTask() 
+        {
+        }
     }
 }
