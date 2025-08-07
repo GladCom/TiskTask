@@ -49,7 +49,8 @@ namespace TiskTask.TelegramBot
           );
           return;
           }
-		  else if (text == BotChatCommands.All) // обработка команды /all
+
+		  else if (text == BotChatCommands.All) 
           {
           	await CommandManager.TakeAllTasksCommand(botClient, chatId, cancellationToken);
           }
@@ -76,7 +77,7 @@ namespace TiskTask.TelegramBot
       }
       catch (Exception ex)
       {
-        Console.WriteLine($"❌ Ошибка при обработке сообщения: {ex.Message}");
+          Console.WriteLine($"❌ Ошибка при обработке сообщения: {ex.Message}");
       }
     }
 
@@ -85,27 +86,27 @@ namespace TiskTask.TelegramBot
       throw new NotImplementedException();
     }
   }
-    
-	/// <summary>
-    /// Список команд боту при передаче текстовым сообщением.
-    /// </summary>
-    public class BotChatCommands
-    {
-      public const string Start = "/start";
-      public const string Stop = "/stop";
-      public const string Info = "/info";
-      public const string Change = "/change";
-      public const string Restart = "/restart";
-      public const string Go = "/go";
-      public const string ChangeName = "/changename";
-      public const string ChangeCity = "/changecity";
-      public const string ChangeWork = "/changework";
-      public const string ChangeHobby = "/changehobby";
-      public const string ChangeInterests = "/changeinterests";
-      public const string GeneratePairs = "/generatepairs";
-      public const string SendPairs = "/sendpairs";
-      public const string RandomPair = "/randompair";
-      public const string Create = "/create";
-      public const string All = "/all";
-    }
+
+  /// <summary>
+  /// Список команд боту при передаче текстовым сообщением.
+  /// </summary>
+  public class BotChatCommands
+  {
+    public const string Start = "/start";
+    public const string Stop = "/stop";
+    public const string Info = "/info";
+    public const string Change = "/change";
+    public const string Restart = "/restart";
+    public const string Go = "/go";
+    public const string ChangeName = "/changename";
+    public const string ChangeCity = "/changecity";
+    public const string ChangeWork = "/changework";
+    public const string ChangeHobby = "/changehobby";
+    public const string ChangeInterests = "/changeinterests";
+    public const string GeneratePairs = "/generatepairs";
+    public const string SendPairs = "/sendpairs";
+    public const string RandomPair = "/randompair";
+    public const string Create = "/create";
+    public const string All = "/all";
+  }
 }
