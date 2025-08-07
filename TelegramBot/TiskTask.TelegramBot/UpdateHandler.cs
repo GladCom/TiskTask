@@ -67,6 +67,8 @@ namespace TiskTask.TelegramBot
                       );
                     }
                     */
+                    
+                    //Обработка команды /create
                     if (message.Text == "/create")
                     {
                         create = true;
