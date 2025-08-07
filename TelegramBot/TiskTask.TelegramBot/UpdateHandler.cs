@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -49,23 +49,11 @@ namespace TiskTask.TelegramBot
           );
           return;
           }
-
-		  else if (text == BotChatCommands.All) 
+          else if (text == BotChatCommands.All) 
           {
-          	await CommandManager.TakeAllTasksCommand(botClient, chatId, cancellationToken);
+            await CommandManager.TakeAllTasksCommand(botClient, chatId, cancellationToken);
           }
-          
-		  /* Пока убрал вывод ответных сообщений
-          if (message.Type == MessageType.Text && !string.IsNullOrEmpty(text))
-          {
-           	await botClient.SendMessage(
-           	chatId: chatId,
-            text: $"📝 Вы написали: {text}",
-            cancellationToken: cancellationToken
-           	);
-          }
-          */
-
+        }
         else
         {
           await botClient.SendMessage(
@@ -77,7 +65,7 @@ namespace TiskTask.TelegramBot
       }
       catch (Exception ex)
       {
-          Console.WriteLine($"❌ Ошибка при обработке сообщения: {ex.Message}");
+        Console.WriteLine($"❌ Ошибка при обработке сообщения: {ex.Message}");
       }
     }
 
