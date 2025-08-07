@@ -69,13 +69,13 @@ namespace TiskTask.TelegramBot
                     */
                     
                     //Обработка команды /create
-                    if (message.Text == "/create")
+                    if (message.Text == BotChatCommands.Create)
                     {
                         create = true;
                         CommandManager.RequestTaskDescriptionAsync(botClient, update);
 
                     }
-                    else if ((message.Text != "/create") && (create == true))
+                    else if ((message.Text != BotChatCommands.Create) && (create == true))
                     {
                         CommandManager.CreateTaskAsync(botClient, update);
                         create = false;
