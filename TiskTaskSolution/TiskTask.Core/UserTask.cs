@@ -1,44 +1,52 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace TiskTask.Core
+namespace TiskTask.Core;
+
+/// <summary>
+/// Описывает модель задачи.
+/// </summary>
+public partial class UserTask
 {
     /// <summary>
-    /// Описывает модель задачи.
+    /// Идентификатор.
     /// </summary>
-    public class UserTask
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Идентификатор пользователя telegram.
+    /// </summary>
+    public int UserId { get; set; }
+
+    /// <summary>
+    /// Название задачи.
+    /// </summary>
+    public string Title { get; set; } = null!;
+
+    /// <summary>
+    /// Описание задачи.
+    /// </summary>
+    public string? Description { get; set; }
+
+    /// <summary>
+    /// Дата создания задачи.
+    /// </summary>
+    public string Created { get; set; } = null!;
+
+    /// <summary>
+    /// Потраченное время на задачу.
+    /// </summary>
+    public int? TimeSpent { get; set; }
+
+    public UserTask(int id, int userId, string title, string description, DateTime createdDate)
     {
-        /// <summary>
-        /// Идентификатор.
-        /// </summary>
-        public int Id { get; private set; }
+        Id = id;
+        UserId = userId;
+        Title = title;
+        Description = description;
+        Created = createdDate.ToString();
+    }
 
-        /// <summary>
-        /// Идентификатор пользователя telegram.
-        /// </summary>
-        public int UserId { get; private set; }
-
-        /// <summary>
-        /// Название задачи.
-        /// </summary>
-        public string Title { get; private set; }
-
-        /// <summary>
-        /// Описание задачи.
-        /// </summary>
-        public string Description { get; private set; }
-
-        /// <summary>
-        /// Дата создания задачи.
-        /// </summary>
-        public DateTime Created { get; private set; }
-
-        /// <summary>
-        /// Потраченное время на задачу.
-        /// </summary>
-        public TimeSpan TimeSpent {  get; private set; }
+    public UserTask()
+    {
     }
 }
