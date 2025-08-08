@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace TiskTask.TelegramBot;
 
@@ -34,9 +36,17 @@ public class CommandManager
         foreach (var task in tasks)
         {
             string message = $"ID: {task.Id}\nЗаголовок: {task.Title}\nОписание: {task.Description}";
+            //Добавила кнопку редактирования к описанию задачи
+            var keyboard = new Telegram.Bot.Types.ReplyMarkups.InlineKeyboardMarkup(new[]{
+                new [] // first row
+                {
+                    InlineKeyboardButton.WithCallbackData("Редактировать",task.Id.ToString())
+                }
+                });
             await botClient.SendMessage(
                 chatId: chatId,
                 text: message,
+                replyMarkup: keyboard,
                 cancellationToken: cancellationToken
             );
         }
@@ -80,7 +90,11 @@ public class CommandManager
             if ((title[0] == "Заголовок") && (description[0] == " Описание"))
             {
                 taskTitle = title[1];
-                taskDiscription = description[1];                
+                taskDiscription = description[1];
+                Dictionary<string,string> taskData = new Dictionary<string,string>();
+                taskData.Add("taskTitle", taskTitle);
+                taskData.Add("taskDiscription", taskDiscription);
+                
                 /*TaskManager.CreateTask(taskTitle,taskDiscription);*/
             }
             else

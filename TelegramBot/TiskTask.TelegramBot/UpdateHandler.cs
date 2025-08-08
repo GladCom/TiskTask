@@ -33,63 +33,83 @@ namespace TiskTask.TelegramBot
     {
             try
             {
-                if (update.Message is not Message message) return;
-
-                var chatId = message.Chat.Id;
-
-                var text = message.Text;
-
-                Console.WriteLine($"📩 От {message.From.FirstName}: {text ?? "[не текст]"}");
-
-                if (message.Type == MessageType.Text && !string.IsNullOrEmpty(text))
+                switch (update.Type)
                 {
-                    if (text == BotChatCommands.Start)
-                    {
-                        await botClient.SendMessage(
-                            chatId: chatId,
-                            text: "Добро пожаловать!",
-                            cancellationToken: cancellationToken
-                        );
+                    case Telegram.Bot.Types.Enums.UpdateType.Message:
+                        {
+                            if (update.Message is not Message userMessage) return;
+                            var message = update.Message;                            
+                            var user = message.From;                
+                            var chatId = message.Chat.Id;
+                            var text = message.Text;
+
+                            Console.WriteLine($"📩 От {message.From.FirstName}: {text ?? "[не текст]"}");
+
+                            if (message.Type == MessageType.Text && !string.IsNullOrEmpty(text))
+                            {
+                                if (text == BotChatCommands.Start)
+                                {
+                                    await botClient.SendMessage(
+                                        chatId: chatId,
+                                        text: "Добро пожаловать!",
+                                        cancellationToken: cancellationToken
+                                    );
+                                    return;
+                                }
+                                else if (text == BotChatCommands.All) // обработка команды /all
+                                {
+                                    await CommandManager.TakeAllTasksCommand(botClient, chatId, cancellationToken);
+                                }
+
+                                /* Пока убрал вывод ответных сообщений
+                                if (message.Type == MessageType.Text && !string.IsNullOrEmpty(text))
+                                {
+                                  await botClient.SendMessage(
+                                  chatId: chatId,
+                                  text: $"📝 Вы написали: {text}",
+                                  cancellationToken: cancellationToken
+                                  );
+                                }
+                                */
+
+                                //Обработка команды /create
+                                if (text == BotChatCommands.Create)
+                                {
+                                    create = true;
+                                    CommandManager.RequestTaskDescriptionAsync(botClient, update);
+
+                                }
+                                else if ((text!= BotChatCommands.Create) && (create == true))
+                                {
+                                    CommandManager.CreateTaskAsync(botClient, update);
+                                    create = false;
+                                }
+                                else
+                                {
+                                    await botClient.SendMessage(
+                                      chatId: chatId,
+                                      text: "Я могу обрабатывать только текстовые сообщения.",
+                                      cancellationToken: cancellationToken
+                                    );
+                                }
+                            }
+                        }return;
+                        //События нажатия кнопок
+                    case Telegram.Bot.Types.Enums.UpdateType.CallbackQuery:
+                        {                            
+                            var callbackQuery = update.CallbackQuery;                            
+                            var user = callbackQuery.From;                     
+                            var chat = callbackQuery.Message.Chat;
+                            
+                            //Id задачи, переданное кнопкой
+                            int IdTask = Int32.Parse(callbackQuery.Data);                  
+                            await botClient.AnswerCallbackQuery(callbackQuery.Id);
+                            
+                            /*TaskManager.Update(IdTask);*/                            
+                        }
                         return;
-                    }
-                    else if (text == BotChatCommands.All) // обработка команды /all
-                    {
-                        await CommandManager.TakeAllTasksCommand(botClient, chatId, cancellationToken);
-                    }
-
-                    /* Пока убрал вывод ответных сообщений
-                    if (message.Type == MessageType.Text && !string.IsNullOrEmpty(text))
-                    {
-                      await botClient.SendMessage(
-                      chatId: chatId,
-                      text: $"📝 Вы написали: {text}",
-                      cancellationToken: cancellationToken
-                      );
-                    }
-                    */
-                    
-                    //Обработка команды /create
-                    if (message.Text == BotChatCommands.Create)
-                    {
-                        create = true;
-                        CommandManager.RequestTaskDescriptionAsync(botClient, update);
-
-                    }
-                    else if ((message.Text != BotChatCommands.Create) && (create == true))
-                    {
-                        CommandManager.CreateTaskAsync(botClient, update);
-                        create = false;
-                    }
-                    else
-                    {
-                        await botClient.SendMessage(
-                          chatId: chatId,
-                          text: "Я могу обрабатывать только текстовые сообщения.",
-                          cancellationToken: cancellationToken
-                        );
-                    }
+                    }   
                 }
-            }
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ Ошибка при обработке сообщения: {ex.Message}");
