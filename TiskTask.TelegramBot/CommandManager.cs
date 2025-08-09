@@ -41,13 +41,13 @@ public class CommandManager
       var keyboard = new Telegram.Bot.Types.ReplyMarkups.InlineKeyboardMarkup(new[]{
         new[]
         {
-          InlineKeyboardButton.WithCallbackData("✅ Старт", $"edit_{task.Id}"),
-          InlineKeyboardButton.WithCallbackData("🛑 Стоп", $"complete_{task.Id}")
+          InlineKeyboardButton.WithCallbackData("✅ Старт", $"start_{task.Id}"),
+          InlineKeyboardButton.WithCallbackData("🛑 Стоп", $"stop_{task.Id}")
         },
         new [] // first row
         {
-            InlineKeyboardButton.WithCallbackData("✏️ Редактировать",task.Id.ToString()),
-            InlineKeyboardButton.WithCallbackData("❌ Удалить",task.Id.ToString())
+            InlineKeyboardButton.WithCallbackData("✏️ Редактировать", $"edit_{task.Id}"),
+            InlineKeyboardButton.WithCallbackData("❌ Удалить", $"remove_{task.Id}")
         }
         });
       await botClient.SendMessage(

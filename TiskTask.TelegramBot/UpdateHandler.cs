@@ -10,6 +10,9 @@ using Telegram.Bot.Types;
 using Telegram.Bot;
 using System.Text.Json;
 using TiskTask.TelegramBot;
+using static System.Collections.Specialized.BitVector32;
+using TiskTask.Core;
+using TelegramBot;
 
 namespace TiskTask.TelegramBot
 {
@@ -143,8 +146,35 @@ namespace TiskTask.TelegramBot
               var user = callbackQuery.From;
               var chat = callbackQuery.Message.Chat;
 
-              int IdTask = Int32.Parse(callbackQuery.Data);
+              //int IdTask = Int32.Parse(callbackQuery.Data);
+              var tryBotton = callbackQuery.Data;
+              var parse = tryBotton.Split('_');
+
+              var IdTask = parse[0];
+              var action = parse[1];
+
+              switch (action)
+              {
+                case "start":
+                  Console.WriteLine("start");
+                  break;
+
+                case "stop":
+                  Console.WriteLine("stop");
+                  break;
+
+                case "edit":
+                  Console.WriteLine("edit");
+                  break;
+
+                case "remove":
+                  Console.WriteLine("remove");
+                  break;
+              }
+
               Console.WriteLine(IdTask);
+              Console.WriteLine(action);
+
               await botClient.AnswerCallbackQuery(callbackQuery.Id);
 
             }
