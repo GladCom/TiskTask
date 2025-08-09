@@ -15,32 +15,49 @@ namespace TiskTask.Core
     /// <summary>
     /// Идентификатор.
     /// </summary>
-    public int Id { get; private set; }
+    public int Id { get; set; }
 
     /// <summary>
     /// Идентификатор пользователя telegram.
     /// </summary>
-    public int UserId { get; private set; }
+    public int UserId { get; set; }
 
     /// <summary>
     /// Название задачи.
     /// </summary>
-    public string Title { get; private set; }
+    public string Title { get; set; }
 
     /// <summary>
     /// Описание задачи.
     /// </summary>
-    public string Description { get; private set; }
+    public string Description { get; set; }
 
     /// <summary>
     /// Дата создания задачи.
     /// </summary>
-    public DateTime Created { get; private set; }
+    public DateTime Created { get; set; }
 
     /// <summary>
     /// Потраченное время на задачу.
     /// </summary>
-    public TimeSpan TimeSpent {  get; private set; }
+    public TimeSpan TimeSpent {  get; set; }
+    #endregion
+
+    #region Конструкторы
+
+    public UserTask(int id, int userId, string title, string description, DateTime createdDate)
+    {
+      Id = id;
+      UserId = userId;
+      Title = title;
+      Description = description;
+      Created = createdDate;
+    }
+
+    public UserTask() 
+    {
+    }
+
     #endregion
   }
 }
