@@ -54,7 +54,6 @@ namespace TiskTask.TelegramBot
       try
       {
         var json = JsonSerializer.Serialize(update, JsonOptions);
-        Console.WriteLine($"Обновление получено: {json}");
       }
       catch (Exception ex)
       {
@@ -79,15 +78,12 @@ namespace TiskTask.TelegramBot
         {
           if (text == BotChatCommands.Start)
           {
-            await SendTextMessageAsync(chatId, "Добро пожаловать!", cancellationToken);
             return;
           }
 
-          await SendTextMessageAsync(chatId, "📝 Вы написали: " + text, cancellationToken);
         }
         else
         {
-          await SendTextMessageAsync(chatId, "Я могу обрабатывать только текстовые сообщения.", cancellationToken);
         }
       }
       catch (Exception ex)
