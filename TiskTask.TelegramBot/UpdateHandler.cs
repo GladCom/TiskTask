@@ -12,7 +12,6 @@ using System.Text.Json;
 using TiskTask.TelegramBot;
 using static System.Collections.Specialized.BitVector32;
 using TiskTask.Core;
-using TelegramBot;
 using Microsoft.EntityFrameworkCore;
 
 namespace TiskTask.TelegramBot

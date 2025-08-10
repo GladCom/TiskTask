@@ -6,25 +6,21 @@ using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
-using TelegramBot;
 using TiskTask.Core;
 
 namespace TiskTask.TelegramBot;
 
 public class CommandManager
 {
-  // Класс для представления задачи
-  private static readonly TaskManager _taskManager = new TaskManager();
+  private static readonly UserTaskManager _userTaskManager = new UserTaskManager();
 
-    private static readonly UserTaskManager _userTaskManager = new UserTaskManager();
-
-    /// <summary>
-    /// Метод для обработки команды /all
-    /// </summary>
-    /// <param name="botClient">TG Bot API клиента.</param>
-    /// <param name="chatId">Идентификатор чата.</param>
-    /// <param name="cancellationToken">Прерывание запроса.</param>
-    public static async Task TakeAllTasksCommand(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken, List<UserTask> tasks)
+  /// <summary>
+  /// Метод для обработки команды /all
+  /// </summary>
+  /// <param name="botClient">TG Bot API клиента.</param>
+  /// <param name="chatId">Идентификатор чата.</param>
+  /// <param name="cancellationToken">Прерывание запроса.</param>
+  public static async Task TakeAllTasksCommand(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken, List<UserTask> tasks)
   {
     //var tasks = _taskManager.GetAllTasks();
 
