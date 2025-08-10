@@ -40,16 +40,21 @@ namespace TiskTask.TelegramBot
     /// Проверяет была ли запущена команда /create
     /// </summary>
     public static bool create;
+
+    /// <summary>
+    /// Ассоциативный массив для передачи данных о задаче
+    /// </summary>
+    public static Dictionary<string, string> taskData = new Dictionary<string, string>();
     #endregion
 
     #region Методы
-    /// <summary>
-    /// Отправка текстового сообщения.
-    /// </summary>
-    /// <param name="chatId">Id пользователя.</param>
-    /// <param name="text">Техт пользователя.</param>
-    /// <param name="cancellationToken">Токен для отмены операции.</param>
-    private async Task SendTextMessageAsync(long chatId, string text, CancellationToken cancellationToken)
+        /// <summary>
+        /// Отправка текстового сообщения.
+        /// </summary>
+        /// <param name="chatId">Id пользователя.</param>
+        /// <param name="text">Техт пользователя.</param>
+        /// <param name="cancellationToken">Токен для отмены операции.</param>
+        private async Task SendTextMessageAsync(long chatId, string text, CancellationToken cancellationToken)
     {
       await _botClient.SendMessage(chatId: chatId, text: text, cancellationToken: cancellationToken);
     }
@@ -111,7 +116,9 @@ namespace TiskTask.TelegramBot
                 }
                 else if (text == BotChatCommands.All) 
                 {
-                  await CommandManager.TakeAllTasksCommand(botClient, chatId, cancellationToken);
+                  int Id = Int32.Parse(chatId.ToString());
+                  List<UserTask> tasks = UserTaskManager.GetAllUserTasks(Id);
+                  await CommandManager.TakeAllTasksCommand(botClient, chatId, cancellationToken,tasks);
                 }
 
                 else if (text == BotChatCommands.Create)
@@ -123,6 +130,10 @@ namespace TiskTask.TelegramBot
                 else if ((text != BotChatCommands.Create) && (create == true))
                 {
                   CommandManager.CreateTaskAsync(botClient, update);
+                  int taskId = UserTaskManager.UsersTasks.Count() + 1;
+                  DateTime createDate = DateTime.Now;
+                  int userId = Int32.Parse(chatId.ToString());
+                  UserTaskManager.CreateUserTask(taskId, userId, taskData["title"], taskData["discription"], createDate);
                   create = false;
                 }
                 else
@@ -150,7 +161,7 @@ namespace TiskTask.TelegramBot
               var tryBotton = callbackQuery.Data;
               var parse = tryBotton.Split('_');
 
-              var IdTask = parse[0];
+              var IdTask = Int32.Parse(parse[0]);
               var action = parse[1];
 
               switch (action)
@@ -165,10 +176,13 @@ namespace TiskTask.TelegramBot
 
                 case "edit":
                   Console.WriteLine("edit");
+                  UserTask userTask = UserTaskManager.GetUserTaskById(IdTask);
+                  UserTaskManager.ChangeUserTask(userTask);
                   break;
 
                 case "remove":
                   Console.WriteLine("remove");
+                  UserTaskManager.DeleteUserTask(IdTask);
                   break;
               }
 

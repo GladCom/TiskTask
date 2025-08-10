@@ -7,6 +7,7 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 using TelegramBot;
+using TiskTask.Core;
 
 namespace TiskTask.TelegramBot;
 
@@ -21,9 +22,9 @@ public class CommandManager
   /// <param name="botClient">TG Bot API клиента.</param>
   /// <param name="chatId">Идентификатор чата.</param>
   /// <param name="cancellationToken">Прерывание запроса.</param>
-  public static async Task TakeAllTasksCommand(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken)
+  public static async Task TakeAllTasksCommand(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken, List<UserTask> tasks)
   {
-    var tasks = _taskManager.GetAllTasks();
+    //var tasks = _taskManager.GetAllTasks();
 
     if (!tasks.Any())
     {
@@ -97,11 +98,10 @@ public class CommandManager
       if ((title[0] == "Заголовок") && (description[0] == " Описание"))
       {
         taskTitle = title[1];
-        taskDiscription = description[1];
-        Dictionary<string, string> taskData = new Dictionary<string, string>();
-        taskData.Add("taskTitle", taskTitle);
-        taskData.Add("taskDiscription", taskDiscription);
-
+        taskDiscription = description[1];        
+        UpdateHandler.taskData.Add("title",taskTitle);
+        UpdateHandler.taskData.Add("description", taskDiscription);            
+                
         /*TaskManager.CreateTask(taskTitle,taskDiscription);*/
       }
       else

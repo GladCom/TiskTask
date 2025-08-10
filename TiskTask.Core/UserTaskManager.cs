@@ -9,19 +9,19 @@ namespace TiskTask.Core
     /// <summary>
     /// Класс для работы с задачами пользователя
     /// </summary>
-    internal class UserTaskManager
+    public class UserTaskManager
     {
         #region Поля и свойства
 
         /// <summary>
         /// Список задач пользователей
         /// </summary>
-        public List<UserTask> UsersTasks { get; set; } = new List<UserTask>();
+        public static List<UserTask> UsersTasks { get; set; } = new List<UserTask>();
 
         #endregion
 
         #region Методы
-        public UserTask CreateUserTask(int id, int userId, string title, string description, DateTime createDate)
+        public static UserTask CreateUserTask(int id, int userId, string title, string description, DateTime createDate)
         {
             var newUserTask = new UserTask(
                                             id,
@@ -34,7 +34,7 @@ namespace TiskTask.Core
             return newUserTask;
         }
 
-        public bool ChangeUserTask(UserTask userTask)
+        public static bool ChangeUserTask(UserTask userTask)
         {
             var existingTask = UsersTasks.FirstOrDefault(t => t.Id == userTask.Id);
             if (existingTask == null)
@@ -48,7 +48,7 @@ namespace TiskTask.Core
             return true;
         }
 
-        public bool DeleteUserTask(int id)
+        public static bool DeleteUserTask(int id)
         {
             var removableTask = UsersTasks.FirstOrDefault(t => t.Id == id);
             if (removableTask == null)
@@ -59,14 +59,14 @@ namespace TiskTask.Core
             return true;
         }
 
-        public List<UserTask> GetAllUserTasks(int userId)
+        public static List<UserTask> GetAllUserTasks(int userId)
         {
             return UsersTasks
                 .Where(t => t.UserId == userId)
                 .ToList();
         }
 
-        public UserTask GetUserTaskById(int taskId)
+        public static UserTask GetUserTaskById(int taskId)
         {
             var gettingTask = UsersTasks.FirstOrDefault(t => t.Id == taskId);
             if (gettingTask == null)
