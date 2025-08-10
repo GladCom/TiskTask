@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
-using TelegramBot;
+using TiskTask.Core;
 
 namespace TiskTask.TelegramBot;
 
 public class CommandManager
 {
   // Класс для представления задачи
-  private static readonly TaskManager _taskManager = new TaskManager();
-
+  private static readonly UserTaskManager _usertask = new UserTaskManager();
+  #region Методы   
   /// <summary>
   /// Метод для обработки команды /all
   /// </summary>
@@ -23,7 +23,7 @@ public class CommandManager
   /// <param name="cancellationToken">Прерывание запроса.</param>
   public static async Task TakeAllTasksCommand(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken)
   {
-    var tasks = _taskManager.GetAllTasks();
+    var tasks = _usertask.GetAllUserTasks(chatId);
 
     if (!tasks.Any())
     {
@@ -118,4 +118,5 @@ public class CommandManager
       text: "Неверный формат данных");
     }
   }
+  #endregion
 }

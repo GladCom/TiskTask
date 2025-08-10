@@ -9,7 +9,7 @@ namespace TiskTask.Core
     /// <summary>
     /// Класс для работы с задачами пользователя
     /// </summary>
-    internal class UserTaskManager
+    public class UserTaskManager
     {
         #region Поля и свойства
 
@@ -21,7 +21,7 @@ namespace TiskTask.Core
         #endregion
 
         #region Методы
-        public UserTask CreateUserTask(int id, int userId, string title, string description, DateTime createDate)
+        public UserTask CreateUserTask(int id, long userId, string title, string description, DateTime createDate)
         {
             var newUserTask = new UserTask(
                                             id,
@@ -59,7 +59,7 @@ namespace TiskTask.Core
             return true;
         }
 
-        public List<UserTask> GetAllUserTasks(int userId)
+        public List<UserTask> GetAllUserTasks(long userId)
         {
             return UsersTasks
                 .Where(t => t.UserId == userId)

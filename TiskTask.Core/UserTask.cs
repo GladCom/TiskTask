@@ -20,7 +20,7 @@ namespace TiskTask.Core
     /// <summary>
     /// Идентификатор пользователя telegram.
     /// </summary>
-    public int UserId { get; set; }
+    public long UserId { get; set; }
 
     /// <summary>
     /// Название задачи.
@@ -45,7 +45,7 @@ namespace TiskTask.Core
 
     #region Конструкторы
 
-    public UserTask(int id, int userId, string title, string description, DateTime createdDate)
+    public UserTask(int id, long userId, string title, string description, DateTime createdDate)
     {
       Id = id;
       UserId = userId;

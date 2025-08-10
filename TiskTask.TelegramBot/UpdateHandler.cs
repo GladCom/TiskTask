@@ -31,6 +31,12 @@ namespace TiskTask.TelegramBot
       WriteIndented = false, 
       Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
     };
+    
+    /// <summary>
+    /// Проверяет была ли запущена команда /create
+    /// </summary>
+    public static bool create;
+    
     #endregion
 
     #region Методы
@@ -78,9 +84,50 @@ namespace TiskTask.TelegramBot
         {
           if (text == BotChatCommands.Start)
           {
-            return;
+            await SendTextMessageAsync(chatId, "🙌🏿 Добро пожаловать!\n\n" +
+                    "Я бот для работы с твоими задачами 😉\n" +
+                    "Благодаря мне ты можешь:\n" +
+                    " * Создавать\n" +
+                    " * Удалять\n" +
+                    " * Редактировать\n" +
+                    " * И засекать время выполнения задачи 😎", cancellationToken);
+            await botClient.SendMessage(
+                    chatId: chatId,
+                    text: $"Вот список команд для моей работы:\n\n" +
+                    $"{BotChatCommands.Start} - это начало мой работы 🐝\n" +
+                    $"{BotChatCommands.All} - это вывод всех твоих задач 🦅\n" +
+                    $"{BotChatCommands.Create} - это добавление новой задачи 🐙\n",
+                    cancellationToken: cancellationToken
+                    );
+                  return;
+          }
+          else if (text == BotChatCommands.All) 
+          {
+            await CommandManager.TakeAllTasksCommand(botClient, chatId, cancellationToken);
           }
 
+          else if (text == BotChatCommands.Create)
+          {
+            create = true;
+            CommandManager.RequestTaskDescriptionAsync(botClient, update);
+
+          }
+          else if ((text != BotChatCommands.Create) && (create == true))
+          {
+            CommandManager.CreateTaskAsync(botClient, update);
+            create = false;
+          }
+          else
+          {
+            await botClient.SendMessage(
+              chatId: chatId,
+              text: $"Вот список команд для моей работы:\n\n" + 
+                    $"{BotChatCommands.Start} - это начало мой работы 🐝\n" +
+                    $"{BotChatCommands.All} - это вывод всех твоих задач 🦅\n" +
+                    $"{BotChatCommands.Create} - это добавление новой задачи 🐙\n",
+                    cancellationToken: cancellationToken
+              );
+          }
         }
         else
         {
