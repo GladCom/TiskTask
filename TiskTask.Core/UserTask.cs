@@ -37,14 +37,24 @@ public string Description { get; set; }
 /// </summary>
 public DateTime Created { get; set; }
 
+<<<<<<< HEAD
 /// <summary>
 /// Потраченное время на задачу.
 /// </summary>
 public TimeSpan TimeSpent {  get; set; }
 #endregion
+=======
+    /// <summary>
+    /// Потраченное время на задачу.
+    /// </summary>
+    public TimeSpan TimeSpent {  get; set; }
+    
+    #endregion
+>>>>>>> 805cb57c4891ff90eaf17fbc70917e50d63477db
 
 #region Конструкторы
 
+<<<<<<< HEAD
 public UserTask(int id, int userId, string title, string description, DateTime createdDate)
 {
   Id = id;
@@ -63,4 +73,43 @@ public UserTask()
   Created = DateTime.Now;
 }
 #endregion
+=======
+    public UserTask(int id, int userId, string title, string description, DateTime createdDate)
+    {
+      Id = id;
+      UserId = userId;
+      Title = title;
+      Description = description;
+      Created = createdDate;
+    }
+
+    public UserTask() 
+    {
+    }
+
+    #endregion
+  }
+
+  /// <summary>
+  /// класс счетчика
+  /// </summary>
+  public class Stopwatch
+  { 
+    public DateTime StartTime { get; } //берет время запуска
+
+    public Stopwatch()
+    {
+      StartTime = DateTime.Now; //при создании устанавливает
+    }
+    
+
+    public Stop() //при остановке считает разницу и выводить
+    {
+      TimeSpan elapsedTime = DateTime.Now - StartTime;
+      string timeData = String.Format("{0:HH ч. mm м. ss с. ff мс.}", elapsedTime);
+      Console.WriteLine(timeData);
+      return elapsedTime;
+    }
+  }
+>>>>>>> 805cb57c4891ff90eaf17fbc70917e50d63477db
 }
