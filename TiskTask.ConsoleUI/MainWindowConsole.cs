@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TiskTask.Core;
 
 namespace TiskTask.ConsoleUI;
 
 public class MainWindowConsole
 {
     private string _login;
-    private Dictionary<string, Timer> _tasks;
+    private List<UserTask> _tasks;
     private List<string> _menu;
+
     public MainWindowConsole(UserModel user) 
     {
         _login = user.Login;
-        _tasks = user.GetTasks();
         _menu = new List<string>
         {
             "1. Начать задачу",
@@ -27,6 +28,7 @@ public class MainWindowConsole
         while (true)
         {
             Console.Clear();
+            Console.WriteLine($"LOGIN: {_login}");
             Console.WriteLine("MENU:");
             foreach (var item in _menu)
             {

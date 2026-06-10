@@ -1,4 +1,6 @@
-﻿namespace TiskTask.ConsoleUI;
+﻿using TiskTask.Core;
+
+namespace TiskTask.ConsoleUI;
 
 public class Program
 {
@@ -7,6 +9,7 @@ public class Program
         string login;
         string password;
         MainWindowConsole mainWindow;
+        UserManager userManager = new UserManager();
 
         Console.WriteLine("Добро пожаловать в менеджер задач!");
         Console.WriteLine("Выберите действие:");
@@ -27,10 +30,10 @@ public class Program
                 Console.WriteLine("Пароль:");
                 password = Console.ReadLine();
 
-                // Логика для входа
-                if(UsersDB.IsUser(new LoginDto (login, password)))
+                // Log In
+                if(userManager.IsUser(login, password))
                 {
-                    mainWindow(UsersDB.GetUser(login, password).ToModel());
+                    mainWindow = new MainWindowConsole(userManager.GetUser(login, password));
                     mainWindow.Menu();
                     break;
                 }
@@ -46,12 +49,12 @@ public class Program
                 Console.WriteLine("Пароль:");
                 password = Console.ReadLine();
 
-                // Логика для регистрации
+                // Registration
                 try
                 {
-                    UsersDB.CreateNewUser(new UserModel(login, password).ToDto());
+                    userManager.CreateNewUser(login, password);
                     Console.WriteLine("User was successfully created");
-                    mainWindow = new MainWindowConsole(UsersDB.GetUser(login, password).ToModel());
+                    mainWindow = new MainWindowConsole(userManager.GetUser(login, password));
                     mainWindow.Menu();
                 }
                 catch (Exception ex)
