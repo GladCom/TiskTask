@@ -57,17 +57,11 @@ namespace TiskTask.Core
         /// <summary>
         /// Создает задачу с автоназначением идентификатора базой данных.
         /// </summary>
-        public UserTask CreateUserTask(long userId, string title, string description, DateTime? createDate = null)
+        public UserTask CreateUserTask(long userId, string title, string description)
         {
             EnsureUserExists(userId);
 
-            var newUserTask = new UserTask
-            {
-                UserId = userId,
-                Title = title,
-                Description = description,
-                Created = createDate ?? DateTime.UtcNow
-            };
+            var newUserTask = new UserTask(userId, title, description);
 
             _context?.UserTasks.Add(newUserTask);
             UsersTasks.Add(newUserTask);
@@ -84,6 +78,11 @@ namespace TiskTask.Core
             if (string.IsNullOrWhiteSpace(normalizedName))
             {
                 throw new ArgumentException("Имя пользователя не может быть пустым.", nameof(name));
+            }
+
+            if (_context?.Users.Any(user => user.Name == normalizedName) is  true)
+            {
+                throw new ArgumentException("Имя уже используется", nameof(name));
             }
 
             var user = new User
@@ -128,7 +127,6 @@ namespace TiskTask.Core
             existingTask.UserId = userTask.UserId;
             existingTask.Title = userTask.Title;
             existingTask.Description = userTask.Description;
-            existingTask.Created = userTask.Created;
             existingTask.TimeSpent = userTask.TimeSpent;
             existingTask.IsRunning = userTask.IsRunning;
             existingTask.StartedAtUtc = userTask.StartedAtUtc;
@@ -141,12 +139,12 @@ namespace TiskTask.Core
             return true;
         }
 
-        public bool DeleteUserTask(int id)
+        public void DeleteUserTask(int id)
         {
             var removableTask = UsersTasks.FirstOrDefault(t => t.Id == id);
             if (removableTask == null)
             {
-                return false;
+                return;
             }
 
             _context?.UserTasks.Remove(removableTask);
@@ -154,8 +152,6 @@ namespace TiskTask.Core
             SaveChanges();
             
             _storage.Save(UsersTasks);
-            
-            return true;
         }
 
         public List<UserTask> GetAllUserTasks(long userId)
@@ -186,9 +182,9 @@ namespace TiskTask.Core
         /// Запускает указанную задачу и останавливает предыдущую активную задачу пользователя.
         /// Работает по принципу шахматных часов: активной может быть только одна задача.
         /// </summary>
-        public UserTask SwitchActiveTask(long userId, int taskId, DateTime? switchedAtUtc = null)
+        public UserTask SwitchActiveTask(long userId, int taskId)
         {
-            var switchMomentUtc = switchedAtUtc ?? DateTime.UtcNow;
+            var switchMomentUtc = DateTime.UtcNow;
             var targetTask = UsersTasks.FirstOrDefault(t => t.Id == taskId && t.UserId == userId);
 
             if (targetTask == null)
@@ -212,7 +208,6 @@ namespace TiskTask.Core
 
             targetTask.IsRunning = true;
             targetTask.StartedAtUtc = switchMomentUtc;
-            targetTask.CompletedAtUtc = null;
             SaveChanges();
 
             return targetTask;
@@ -221,17 +216,16 @@ namespace TiskTask.Core
         /// <summary>
         /// Останавливает текущую активную задачу пользователя и фиксирует накопленное время.
         /// </summary>
-        public bool StopActiveTask(long userId, DateTime? stoppedAtUtc = null)
+        public void StopActiveTask(long userId)
         {
             var activeTask = GetActiveTask(userId);
             if (activeTask == null)
             {
-                return false;
+                return;
             }
 
-            StopTaskInternal(activeTask, stoppedAtUtc ?? DateTime.UtcNow);
+            StopTaskInternal(activeTask, DateTime.UtcNow);
             SaveChanges();
-            return true;
         }
 
         /// <summary>
@@ -304,12 +298,12 @@ namespace TiskTask.Core
             _context?.SaveChanges();
         }
 
-        private User EnsureUserExists(long userId)
+        private void EnsureUserExists(long userId)
         {
             var existingUser = GetUserById(userId);
             if (existingUser != null)
             {
-                return existingUser;
+                return;
             }
 
             var user = new User
@@ -322,18 +316,14 @@ namespace TiskTask.Core
             _context?.Users.Add(user);
             Users.Add(user);
             SaveChanges();
-
-            return user;
         }
 
         #endregion
 
         #region Конструкторы
+
         public UserTaskManager()
             : this(new TelegramBotLibraryContext())
-        
-        public UserTaskManager() 
-            : this(new List<UserTask>())
         {
         }
 
