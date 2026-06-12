@@ -31,7 +31,7 @@ namespace TiskTask.Core
     /// <summary>
     /// Дата создания задачи.
     /// </summary>
-    public DateTime Created { get; set; }
+    public DateTime Created { get; init; }
 
     /// <summary>
     /// Потраченное время на задачу.
@@ -68,6 +68,14 @@ namespace TiskTask.Core
       Title = title;
       Description = description;
       Created = createdDate;
+    }
+    
+    public UserTask(long userId, string title, string description)
+    {
+      UserId = userId;
+      Title = title;
+      Description = description;
+      Created = DateTime.UtcNow;
     }
 
     public UserTask() 
