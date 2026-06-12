@@ -125,18 +125,68 @@ namespace TiskTask.Core
             {
                 return false;
             }
-            existingTask.UserId = userTask.UserId;
-            existingTask.Title = userTask.Title;
-            existingTask.Description = userTask.Description;
-            existingTask.Created = userTask.Created;
-            existingTask.TimeSpent = userTask.TimeSpent;
-            existingTask.IsRunning = userTask.IsRunning;
-            existingTask.StartedAtUtc = userTask.StartedAtUtc;
-            existingTask.IsCompleted = userTask.IsCompleted;
-            existingTask.CompletedAtUtc = userTask.CompletedAtUtc;
-            SaveChanges();
 
-            _storage.Save(UsersTasks);
+            bool Changes = false;
+            
+            if (existingTask.UserId) != userTask.UserId)
+            {
+                existingTask.UserId = userTask.UserId;
+                Changes = true;
+            }
+            
+            if (existingTask.Title) != userTask.Title)
+            {
+                existingTask.Title = userTask.Title;
+                Changes = true;
+            }
+            
+            if (existingTask.Description) != userTask.Description)
+            {
+                existingTask.Description = userTask.Description;
+                Changes = true;
+            }
+            
+            if (existingTask.Created) != userTask.Created)
+            {
+                existingTask.Created = userTask.Created;
+                Changes = true;
+            }
+            
+            if (existingTask.TimeSpent) != userTask.TimeSpent)
+            {
+                existingTask.TimeSpent = userTask.TimeSpent;
+                Changes = true;
+            }
+            
+            if (existingTask.IsRunning) != userTask.IsRunning)
+            {
+                existingTask.IsRunning = userTask.IsRunning;
+                Changes = true;
+            }
+            
+            if (existingTask.StartedAtUtc) != userTask.StartedAtUtc)
+            {
+                existingTask.StartedAtUtc = userTask.StartedAtUtc;
+                Changes = true;
+            }
+            
+            if (existingTask.IsCompleted) != userTask.IsCompleted)
+            {
+                existingTask.IsCompleted = userTask.IsCompleted;
+                Changes = true;
+            }
+            
+            if (existingTask.CompletedAtUtc) != userTask.CompletedAtUtc)
+            {
+                existingTask.CompletedAtUtc = userTask.CompletedAtUtc;
+                Changes = true;
+            }
+
+            if (Changes)
+            {
+                SaveChanges();
+                _storage.Save(UsersTasks);
+            }
             
             return true;
         }
@@ -329,8 +379,9 @@ namespace TiskTask.Core
         #endregion
 
         #region Конструкторы
+
         public UserTaskManager()
-            : this(new TelegramBotLibraryContext())
+            : this(new TelegramBotLibraryContext());
         
         public UserTaskManager() 
             : this(new List<UserTask>())

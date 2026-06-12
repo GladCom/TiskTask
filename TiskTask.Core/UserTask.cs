@@ -113,7 +113,7 @@ namespace TiskTask.Core
     }
     
 
-    public Stop() //при остановке считает разницу и выводить
+    public TimeSpan Stop() //при остановке считает разницу и выводить
     {
       TimeSpan elapsedTime = DateTime.Now - StartTime;
       string timeData = String.Format("{0:HH ч. mm м. ss с. ff мс.}", elapsedTime);
