@@ -31,7 +31,7 @@ namespace TiskTask.Core
     /// <summary>
     /// Дата создания задачи.
     /// </summary>
-    public DateTime Created { get; set; }
+    public DateTime Created { get; init; }
 
     /// <summary>
     /// Потраченное время на задачу.
@@ -69,6 +69,14 @@ namespace TiskTask.Core
       Description = description;
       Created = createdDate;
     }
+    
+    public UserTask(long userId, string title, string description)
+    {
+      UserId = userId;
+      Title = title;
+      Description = description;
+      Created = DateTime.UtcNow;
+    }
 
     public UserTask() 
     {
@@ -98,27 +106,5 @@ namespace TiskTask.Core
       return TimeSpent + elapsed;
     }
     #endregion
-  }
-
-  /// <summary>
-  /// класс счетчика
-  /// </summary>
-  public class Stopwatch
-  { 
-    public DateTime StartTime { get; } //берет время запуска
-
-    public Stopwatch()
-    {
-      StartTime = DateTime.Now; //при создании устанавливает
-    }
-    
-
-    public TimeSpan Stop() //при остановке считает разницу и выводить
-    {
-      TimeSpan elapsedTime = DateTime.Now - StartTime;
-      string timeData = String.Format("{0:HH ч. mm м. ss с. ff мс.}", elapsedTime);
-      Console.WriteLine(timeData);
-      return elapsedTime;
-    }
   }
 }

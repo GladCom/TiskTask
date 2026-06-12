@@ -79,15 +79,17 @@ public partial class Form1 : Form
     private void addUserButton_Click(object? sender, EventArgs e)
     {
         var userName = PromptForText("Новый пользователь", "Введите имя пользователя:");
-        if (string.IsNullOrWhiteSpace(userName))
+        try
         {
-            return;
+            var user = _manager.CreateUser(userName);
+            LoadUsers(user.Id);
+            ClearEditor();
+            RefreshTasks();
         }
-
-        var user = _manager.CreateUser(userName);
-        LoadUsers(user.Id);
-        ClearEditor();
-        RefreshTasks();
+        catch (ArgumentException exception)
+        {
+            MessageBox.Show(exception.Message,"Ошибка при создании нового пользователя!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
     }
 
     private void newTaskButton_Click(object? sender, EventArgs e)
