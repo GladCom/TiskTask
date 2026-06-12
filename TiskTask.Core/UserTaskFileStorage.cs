@@ -36,14 +36,35 @@ public class UserTaskFileStorage
 
             var parts = line.Split(';');
 
+            if (parts.Length < 6)
+                continue;
+
+            if (!int.TryParse(parts[0], out var id))
+                continue;
+
+            if (!long.TryParse(parts[1], out var userId))
+                continue;
+
+            var title = parts[2];
+            var description = parts[3];
+
+            if (!DateTime.TryParseExact(parts[4], "O", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var created))
+            {
+                if (!DateTime.TryParse(parts[4], CultureInfo.InvariantCulture, DateTimeStyles.None, out created))
+                    created = DateTime.Now;
+            }
+
+            if (!TimeSpan.TryParse(parts[5], out var timeSpent))
+                timeSpent = TimeSpan.Zero;
+
             result.Add(new UserTask
             {
-                Id = int.Parse(parts[0]),
-                UserId = long.Parse(parts[1]),
-                Title = parts[2],
-                Description = parts[3],
-                Created = DateTime.Parse(parts[4], CultureInfo.InvariantCulture),
-                TimeSpent = TimeSpan.Parse(parts[5])
+                Id = id,
+                UserId = userId,
+                Title = title,
+                Description = description,
+                Created = created,
+                TimeSpent = timeSpent
             });
         }
 

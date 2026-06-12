@@ -11,105 +11,65 @@ namespace TiskTask.Core;
 /// </summary>
 public class UserTask
 {
-#region Поля и свойства
-/// <summary>
-/// Идентификатор.
-/// </summary>
-public int Id { get; set; }
+    #region Поля и свойства
 
-/// <summary>
-/// Идентификатор пользователя telegram.
-/// </summary>
-public long UserId { get; set; }
+    /// <summary>
+    /// Идентификатор.
+    /// </summary>
+    public int Id { get; set; }
 
-/// <summary>
-/// Название задачи.
-/// </summary>
-public string Title { get; set; }
+    /// <summary>
+    /// Идентификатор пользователя.
+    /// </summary>
+    public long UserId { get; set; }
 
-/// <summary>
-/// Описание задачи.
-/// </summary>
-public string Description { get; set; }
+    /// <summary>
+    /// Название задачи.
+    /// </summary>
+    public string Title { get; set; }
 
-/// <summary>
-/// Дата создания задачи.
-/// </summary>
-public DateTime Created { get; set; }
+    /// <summary>
+    /// Описание задачи.
+    /// </summary>
+    public string Description { get; set; }
 
-<<<<<<< HEAD
-/// <summary>
-/// Потраченное время на задачу.
-/// </summary>
-public TimeSpan TimeSpent {  get; set; }
-#endregion
-=======
+    /// <summary>
+    /// Дата создания задачи.
+    /// </summary>
+    public DateTime Created { get; set; }
+
     /// <summary>
     /// Потраченное время на задачу.
     /// </summary>
-    public TimeSpan TimeSpent {  get; set; }
-    
-    #endregion
->>>>>>> 805cb57c4891ff90eaf17fbc70917e50d63477db
-
-#region Конструкторы
-
-<<<<<<< HEAD
-public UserTask(int id, int userId, string title, string description, DateTime createdDate)
-{
-  Id = id;
-  UserId = userId;
-  Title = title;
-  Description = description;
-  Created = createdDate;
-}
-
-public UserTask() 
-{
-  Id = -1;
-  UserId = -1;
-  Title = "None";
-  Description = "None";
-  Created = DateTime.Now;
-}
-#endregion
-=======
-    public UserTask(int id, int userId, string title, string description, DateTime createdDate)
-    {
-      Id = id;
-      UserId = userId;
-      Title = title;
-      Description = description;
-      Created = createdDate;
-    }
-
-    public UserTask() 
-    {
-    }
+    public TimeSpan TimeSpent { get; set; }
 
     #endregion
-  }
 
-  /// <summary>
-  /// класс счетчика
-  /// </summary>
-  public class Stopwatch
-  { 
-    public DateTime StartTime { get; } //берет время запуска
+    #region Конструкторы
 
-    public Stopwatch()
+    public UserTask(int id, long userId, string title, string description, DateTime createdDate)
     {
-      StartTime = DateTime.Now; //при создании устанавливает
+        Id = id;
+        UserId = userId;
+        Title = title;
+        Description = description;
+        Created = createdDate;
+        TimeSpent = TimeSpan.Zero;
     }
-    
 
-    public Stop() //при остановке считает разницу и выводить
+    public UserTask()
     {
-      TimeSpan elapsedTime = DateTime.Now - StartTime;
-      string timeData = String.Format("{0:HH ч. mm м. ss с. ff мс.}", elapsedTime);
-      Console.WriteLine(timeData);
-      return elapsedTime;
+        Id = -1;
+        UserId = -1;
+        Title = "None";
+        Description = "None";
+        Created = DateTime.Now;
+        TimeSpent = TimeSpan.Zero;
     }
-  }
->>>>>>> 805cb57c4891ff90eaf17fbc70917e50d63477db
+    #endregion
+
+    public void Print()
+    {
+        Console.WriteLine($"{Id} {Title} ({Description})");
+    }
 }
