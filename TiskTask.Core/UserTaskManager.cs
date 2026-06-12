@@ -18,6 +18,11 @@ namespace TiskTask.Core
         public List<User> Users { get; private set; } = new List<User>();
 
         /// <summary>
+        /// Файл со всеми тасками
+        /// </summary>
+        private readonly UserTaskFileStorage _storage;
+        
+        /// <summary>
         /// Список задач пользователей
         /// </summary>
         public List<UserTask> UsersTasks { get; set; } = new List<UserTask>();
@@ -43,6 +48,9 @@ namespace TiskTask.Core
             _context?.UserTasks.Add(newUserTask);
             UsersTasks.Add(newUserTask);
             SaveChanges();
+            
+            _storage.Save(UsersTasks);
+            
             return newUserTask;
         }
 
@@ -127,6 +135,9 @@ namespace TiskTask.Core
             existingTask.IsCompleted = userTask.IsCompleted;
             existingTask.CompletedAtUtc = userTask.CompletedAtUtc;
             SaveChanges();
+
+            _storage.Save(UsersTasks);
+            
             return true;
         }
 
@@ -141,6 +152,9 @@ namespace TiskTask.Core
             _context?.UserTasks.Remove(removableTask);
             UsersTasks.Remove(removableTask);
             SaveChanges();
+            
+            _storage.Save(UsersTasks);
+            
             return true;
         }
 
@@ -317,10 +331,13 @@ namespace TiskTask.Core
         #region Конструкторы
         public UserTaskManager()
             : this(new TelegramBotLibraryContext())
+        
+        public UserTaskManager() 
+            : this(new List<UserTask>())
         {
         }
 
-        public UserTaskManager(List<UserTask> userTasks)
+        public UserTaskManager(List<UserTask> userTasks) 
         {
             UsersTasks = userTasks;
             Users = userTasks
@@ -343,6 +360,12 @@ namespace TiskTask.Core
                 .ThenBy(user => user.Id)
                 .ToList();
             UsersTasks = _context.UserTasks.ToList();
+        }
+        
+        public UserTaskManager(UserTaskFileStorage storage)
+        {
+            _storage = storage;
+            UsersTasks = _storage.Load();
         }
 
         #endregion
