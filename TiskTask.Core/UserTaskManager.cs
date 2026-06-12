@@ -80,6 +80,11 @@ namespace TiskTask.Core
                 throw new ArgumentException("Имя пользователя не может быть пустым.", nameof(name));
             }
 
+            if (_context?.Users.Any(user => user.Name == normalizedName) is  true)
+            {
+                throw new ArgumentException("Имя уже используется", nameof(name));
+            }
+
             var user = new User
             {
                 Name = normalizedName,
