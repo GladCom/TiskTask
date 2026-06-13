@@ -118,5 +118,5 @@ public class UserTask
         Console.WriteLine($"{Id} {Title} ({Description})");
     }
     #endregion
-  }
 }
+

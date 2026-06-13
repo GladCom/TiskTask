@@ -170,7 +170,7 @@ public class MainWindowConsole
                 ? _tasksManager.UsersTasks.Max(t => t.Id) + 1
                 : 1;
 
-            var newTask = _tasksManager.CreateUserTask(newId, _userId, title, description, DateTime.Now);
+            var newTask = _tasksManager.CreateUserTask(_userId, title, description, DateTime.Now);
             Console.WriteLine($"\n✅ Задача '{newTask.Title}' успешно добавлена!");
         }
         catch (Exception ex)
