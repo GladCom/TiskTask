@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿﻿﻿﻿using System;
 
 namespace TiskTask.Core;
 
@@ -26,23 +22,42 @@ public class UserTask
     /// <summary>
     /// Название задачи.
     /// </summary>
-    public string Title { get; set; }
+    public string Title { get; set; } = string.Empty;
 
     /// <summary>
     /// Описание задачи.
     /// </summary>
-    public string Description { get; set; }
+    public string Description { get; set; } = string.Empty;
 
     /// <summary>
     /// Дата создания задачи.
     /// </summary>
-    public DateTime Created { get; set; }
+    public DateTime Created { get; init; }
 
     /// <summary>
     /// Потраченное время на задачу.
     /// </summary>
     public TimeSpan TimeSpent { get; set; }
 
+    /// <summary>
+    /// Признак того, что задача сейчас активна.
+    /// </summary>
+    public bool IsRunning { get; set; }
+
+    /// <summary>
+    /// Момент последнего запуска таймера.
+    /// </summary>
+    public DateTime? StartedAtUtc { get; set; }
+
+    /// <summary>
+    /// Признак того, что задача завершена.
+    /// </summary>
+    public bool IsCompleted { get; set; }
+
+    /// <summary>
+    /// Момент завершения задачи.
+    /// </summary>
+    public DateTime? CompletedAtUtc { get; set; }
     #endregion
 
     #region Конструкторы
@@ -56,6 +71,14 @@ public class UserTask
         Created = createdDate;
         TimeSpent = TimeSpan.Zero;
     }
+    
+    public UserTask(long userId, string title, string description)
+    {
+      UserId = userId;
+      Title = title;
+      Description = description;
+      Created = DateTime.UtcNow;
+    }
 
     public UserTask()
     {
@@ -67,9 +90,33 @@ public class UserTask
         TimeSpent = TimeSpan.Zero;
     }
     #endregion
+      
+    #region Методы
+    /// <summary>
+    /// Возвращает полное затраченное время с учетом текущего запущенного интервала.
+    /// </summary>
+    public TimeSpan GetCurrentTimeSpent(DateTime? currentUtc = null)
+    {
+      if (!IsRunning || StartedAtUtc == null)
+      {
+        return TimeSpent;
+      }
 
-    public void Print()
+      var now = currentUtc ?? DateTime.UtcNow;
+      var elapsed = now - StartedAtUtc.Value;
+
+      if (elapsed < TimeSpan.Zero)
+      {
+        elapsed = TimeSpan.Zero;
+      }
+
+      return TimeSpent + elapsed;
+    }
+  
+      public void Print()
     {
         Console.WriteLine($"{Id} {Title} ({Description})");
     }
+    #endregion
+  }
 }
