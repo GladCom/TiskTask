@@ -148,7 +148,7 @@ namespace TiskTask.TelegramBot
                   int userId = Int32.Parse(chatId.ToString());
                   CommandManager.CreateTaskAsync(botClient, chatId, update);
 
-                  userTaskManager.CreateUserTask(taskId, userId, taskData["title"], taskData["description"], createDate);
+                  userTaskManager.CreateUserTask(taskId, userId, taskData["title"], taskData["description"]);
                   create = false;
 
                   using var context = new TelegramBotLibraryContext();
