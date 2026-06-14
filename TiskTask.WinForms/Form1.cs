@@ -245,6 +245,7 @@ public partial class Form1 : Form
 
     private void RefreshTasks(bool keepSelection = false)
     {
+        _isRefreshing = true;
         _manager.ReloadFromDatabase();
 
         // Получаем ВСЕХ пользователей для быстрого доступа по Id
@@ -295,14 +296,12 @@ public partial class Form1 : Form
         }
 
         tasksListView.EndUpdate();
+        _isRefreshing = false;
+        
         UpdateActiveTaskLabel();
 
-        if (selectedTaskId != null && filteredTasks.Any(x => x.Id == selectedTaskId.Value))
-        {
-            var selectedTask = filteredTasks.First(x => x.Id == selectedTaskId.Value);
-            UpdateEditor(selectedTask);
-        }
-        else if (_selectedTaskId != null && !filteredTasks.Any(x => x.Id == _selectedTaskId.Value))
+
+        if (_selectedTaskId != null && !filteredTasks.Any(x => x.Id == _selectedTaskId.Value))
         {
             ClearEditor();
         }
