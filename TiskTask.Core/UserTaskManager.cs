@@ -2,120 +2,78 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TiskTask.Core;
-
-/// <summary>
-/// Класс для работы с задачами пользователя
-/// </summary>
-public class UserTaskManager
+namespace TiskTask.Core
 {
-    #region Поля и свойства
-      
-    private readonly TelegramBotLibraryContext? _context;
-
     /// <summary>
-    /// Список пользователей.
+    /// Класс для работы с задачами пользователя
     /// </summary>
-    public List<User> Users { get; private set; } = new List<User>();
-
-    /// <summary>
-    /// Файл со всеми тасками
-    /// </summary>
-    private readonly UserTaskFileStorage _tasks = new UserTaskFileStorage("tasks.csv");
-  
-    /// <summary>
-    /// Список задач пользователей
-    /// </summary>
-    public List<UserTask> UsersTasks { get; set; } = new List<UserTask>();
-    public Stopwatch Timer;
-
-    #endregion
-
-    #region Конструкторы
-    public UserTaskManager() : this(new TelegramBotLibraryContext())
+    public class UserTaskManager
     {
-        UsersTasks = _tasks.Load();
-        Timer = new Stopwatch();
-    }
+        #region Поля и свойства
+        private readonly TelegramBotLibraryContext? _context;
 
-    public UserTaskManager(List<UserTask> userTasks) 
-    {
-        UsersTasks = userTasks;
-        Users = userTasks
-                .Select(task => task.UserId)
-                .Distinct()
-                .OrderBy(userId => userId)
-                .Select(userId => new User
-                {
-                    Id = userId,
-                    Name = $"Пользователь {userId}"
-                })
-                .ToList();
-        Timer = new Stopwatch();
-        }
+        /// <summary>
+        /// Список пользователей.
+        /// </summary>
+        public List<User> Users { get; private set; } = new List<User>();
 
-        public UserTaskManager(TelegramBotLibraryContext context)
-        {
-            _context = context;
-            Users = _context.Users
-                .OrderBy(user => user.Name)
-                .ThenBy(user => user.Id)
-                .ToList();
-            UsersTasks = _context.UserTasks.ToList();
-        }
+        /// <summary>
+        /// Файл со всеми тасками
+        /// </summary>
+        private readonly UserTaskFileStorage _storage;
         
-        public UserTaskManager(UserTaskFileStorage storage)
-        {
-            _tasks = storage;
-            UsersTasks = _tasks.Load();
-            Timer = new Stopwatch();
-        }
-    #endregion
+        /// <summary>
+        /// Список задач пользователей
+        /// </summary>
+        public List<UserTask> UsersTasks { get; set; } = new List<UserTask>();
 
-    #region Методы
-    /// <summary>
-    /// Создает задачу с автоназначением идентификатора базой данных.
-    /// </summary>
-    public UserTask CreateUserTask(long userId, string title, string description)
-    {
-        EnsureUserExists(userId);
-      
-        var newUserTask = new UserTask
+        #endregion
+
+        #region Методы
+        /// <summary>
+        /// Создает задачу и при наличии контекста сразу сохраняет ее в SQLite.
+        /// </summary>
+        public UserTask CreateUserTask(int id, long userId, string title, string description, DateTime createDate)
         {
-             UserId = userId,
-             Title = title,
-             Description = description,
-             Created = DateTime.UtcNow
-        };
-      
-        _context?.UserTasks.Add(newUserTask);
-      
-        UsersTasks.Add(newUserTask);
-        SaveChanges();
-        _tasks.Save(UsersTasks);
-        return newUserTask;
-    }
-    
-    /// <summary>
-    /// Создает задачу для консольного UI.
-    /// </summary>
-    public UserTask CreateUserTask(int taskId, long userId, string title, string description)
-    {
-        EnsureUserExists(userId);
-      
-        var newUserTask = new UserTask
+            EnsureUserExists(userId);
+
+            var newUserTask = new UserTask(
+                                            id,
+                                            userId,
+                                            title,
+                                            description,
+                                            createDate
+                                           );
+
+            _context?.UserTasks.Add(newUserTask);
+            UsersTasks.Add(newUserTask);
+            SaveChanges();
+            
+            _storage.Save(UsersTasks);
+            
+            return newUserTask;
+        }
+
+        /// <summary>
+        /// Создает задачу с автоназначением идентификатора базой данных.
+        /// </summary>
+        public UserTask CreateUserTask(long userId, string title, string description, DateTime? createDate = null)
         {
-            Id = taskId,
-            UserId = userId,
-            Title = title,
-            Description = description,
-            Created = DateTime.UtcNow
-        };
-      
-        UsersTasks.Add(newUserTask);
-        _tasks.Save(UsersTasks);
-        return newUserTask;
-    }
+            EnsureUserExists(userId);
+
+            var newUserTask = new UserTask
+            {
+                UserId = userId,
+                Title = title,
+                Description = description,
+                Created = createDate ?? DateTime.UtcNow
+            };
+
+            _context?.UserTasks.Add(newUserTask);
+            UsersTasks.Add(newUserTask);
+            SaveChanges();
+            return newUserTask;
+        }
 
         /// <summary>
         /// Создает нового пользователя.
@@ -159,7 +117,7 @@ public class UserTaskManager
         {
             return Users.FirstOrDefault(user => user.Id == userId);
         }
-  
+
         public bool ChangeUserTask(UserTask userTask)
         {
             var existingTask = UsersTasks.FirstOrDefault(t => t.Id == userTask.Id);
@@ -221,12 +179,12 @@ public class UserTaskManager
             if (Changes)
             {
                 SaveChanges();
-               _tasks.Save(UsersTasks);
+                _storage.Save(UsersTasks);
             }
             
             return true;
         }
-        
+
         public void ChangeUserTask(int taskId, string title, string description, long userId)
         {
             var task = GetUserTaskById(taskId);
@@ -238,45 +196,40 @@ public class UserTaskManager
             }
         }
         
-        /// <summary>
-        ///Удалить задачу в приложении Winform.
-        /// </summary>
-        /// <param name="id"></param>
-        public void DeleteUserTask(int id)
+        public bool DeleteUserTask(int id)
         {
             var removableTask = UsersTasks.FirstOrDefault(t => t.Id == id);
             if (removableTask == null)
             {
-                return;
+                return false;
             }
 
             _context?.UserTasks.Remove(removableTask);
             UsersTasks.Remove(removableTask);
             SaveChanges();
             
-            _tasks.Save(UsersTasks);
+            _storage.Save(UsersTasks);
             
+            return true;
         }
-        /// <summary>
-        ///Удалить задачу в консольном UI.
-        /// </summary>
-        /// <param name="id"></param>
-        public void DeleteUserTask(long userId, int id)
-        {
-            var removableTask = UsersTasks.FirstOrDefault(t => t.Id == id);
-            if (removableTask == null)
-            {
-                return;
-            }
 
-            Console.WriteLine($"Пользователь с ИД {userId} удалил задачу" );
-            UsersTasks.Remove(removableTask);
-            
-            _tasks.Save(UsersTasks);
-            
+        public List<UserTask> GetAllUserTasks(long userId)
+        {
+          return UsersTasks
+              .Where(t => t.UserId == userId)
+              .ToList();
         }
-  
-          /// <summary>
+
+        public UserTask GetUserTaskById(int taskId)
+        {
+            var gettingTask = UsersTasks.FirstOrDefault(t => t.Id == taskId);
+            if (gettingTask == null)
+                throw new KeyNotFoundException($"Задача с Id {taskId} не найдена.");
+
+            return gettingTask;
+        }
+
+        /// <summary>
         /// Возвращает активную задачу пользователя, если она есть.
         /// </summary>
         public UserTask? GetActiveTask(long userId)
@@ -428,78 +381,46 @@ public class UserTaskManager
             return user;
         }
 
-    
-    public List<UserTask> GetAllUserTasks(long userId)
-    {
-        return UsersTasks
-            .Where(t => t.UserId == userId)  
-            .ToList();
-    }
+        #endregion
 
-    public UserTask GetUserTaskById(int taskId)
-    {
-        var gettingTask = UsersTasks.FirstOrDefault(t => t.Id == taskId);
-        if (gettingTask == null)
-            throw new KeyNotFoundException($"Задача с Id {taskId} не найдена.");
+        #region Конструкторы
 
-        return gettingTask;
-    }
-
-    public void Dispose()
-    {
-        _tasks.Save(UsersTasks);
-    }
-  #endregion
-}
-
-/// <summary>
-/// класс счетчика
-/// </summary>
-public class Stopwatch
-{
-    private DateTime _startTime;
-    private bool _isRunning;
-
-    public DateTime StartTime
-    {
-        get
-
+        public UserTaskManager()
+            : this(new TelegramBotLibraryContext())
         {
-            if (!_isRunning)
-                throw new InvalidOperationException("Таймер не запущен");
-            return _startTime;
         }
-    }
 
-    public Stopwatch()
-    {
-        _isRunning = false;
-    }
+        public UserTaskManager(List<UserTask> userTasks) 
+        {
+            UsersTasks = userTasks;
+            Users = userTasks
+                .Select(task => task.UserId)
+                .Distinct()
+                .OrderBy(userId => userId)
+                .Select(userId => new User
+                {
+                    Id = userId,
+                    Name = $"Пользователь {userId}"
+                })
+                .ToList();
+        }
 
-    public void Start()
-    {
-        _startTime = DateTime.Now;
-        _isRunning = true;
-    }
+        public UserTaskManager(TelegramBotLibraryContext context)
+        {
+            _context = context;
+            Users = _context.Users
+                .OrderBy(user => user.Name)
+                .ThenBy(user => user.Id)
+                .ToList();
+            UsersTasks = _context.UserTasks.ToList();
+        }
+        
+        public UserTaskManager(UserTaskFileStorage storage)
+        {
+            _storage = storage;
+            UsersTasks = _storage.Load();
+        }
 
-    public TimeSpan Stop() //при остановке считает разницу и выводить
-    {
-        if (!_isRunning)
-            throw new InvalidOperationException("Таймер не запущен");
-
-        TimeSpan elapsedTime = DateTime.Now - StartTime;
-        _isRunning = false;
-
-        string timeData = $"{(int)elapsedTime.TotalHours:00} ч. {elapsedTime.Minutes:00} м. {elapsedTime.Seconds:00} с. {elapsedTime.Milliseconds:000} мс.";
-        Console.WriteLine($"Время выполнения: {timeData}");
-        return elapsedTime;
-    }
-
-    public TimeSpan GetCurrentElapsed()
-    {
-        if (!_isRunning)
-            return TimeSpan.Zero;
-
-        return DateTime.Now - _startTime;
+        #endregion
     }
 }
