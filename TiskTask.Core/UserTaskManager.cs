@@ -76,7 +76,7 @@ public class UserTaskManager
     /// <summary>
     /// Создает задачу с автоназначением идентификатора базой данных.
     /// </summary>
-    public UserTask CreateUserTask(long userId, string title, string description, DateTime createDate)
+    public UserTask CreateUserTask(long userId, string title, string description)
     {
         EnsureUserExists(userId);
       
@@ -85,7 +85,7 @@ public class UserTaskManager
              UserId = userId,
              Title = title,
              Description = description,
-             Created = createDate
+             Created = DateTime.UtcNow
         };
       
         _context?.UserTasks.Add(newUserTask);
