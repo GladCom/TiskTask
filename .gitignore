@@ -418,3 +418,11 @@ FodyWeavers.xsd
 *.msp
 
 /.idea
+token.txt
+*.db
+*.db-shm
+*.db-wal
+tasks.csv
+Users.csv
+/bin
+obj/

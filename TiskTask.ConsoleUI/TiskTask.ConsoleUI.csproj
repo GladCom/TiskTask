@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="SourceGear.sqlite3" Version="3.50.4.5" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\TiskTask.Core\TiskTask.Core.csproj" />
   </ItemGroup>
 

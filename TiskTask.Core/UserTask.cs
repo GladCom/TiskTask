@@ -82,7 +82,7 @@ public class UserTask
 
     public UserTask()
     {
-        Id = -1;
+        Id = 1;
         UserId = -1;
         Title = "None";
         Description = "None";
