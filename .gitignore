@@ -416,3 +416,14 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+/.idea
+token.txt
+*.db
+*.db-shm
+*.db-wal
+tasks.csv
+Users.csv
+/bin
+obj/
+token.txt
